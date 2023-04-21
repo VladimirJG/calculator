@@ -45,21 +45,21 @@ public class Main {
         int[] arabNumbers = {1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000};
         String[] romanNumbers = {"I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M"};
         int i = 12;
-        String translateString = "";
+        StringBuilder translateString = new StringBuilder();
         while (num > 0) {
             while (arabNumbers[i] > num) {
                 i--;
             }
-            translateString += romanNumbers[i];
+            translateString.append(romanNumbers[i]);
             num -= arabNumbers[i];
         }
-        return translateString;
+        return translateString.toString();
     }
 
     public static boolean arabNumbersGetting(String str) {
         int[] arabNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        for (int i = 0; i < arabNumbers.length; i++) {
-            if (Integer.parseInt(str) == arabNumbers[i]) {
+        for (int arabNumber : arabNumbers) {
+            if (Integer.parseInt(str) == arabNumber) {
                 return true;
             }
         }
@@ -68,8 +68,8 @@ public class Main {
 
     public static boolean romanNumbersGetting(String str) {
         String[] romanNumbers = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
-        for (int i = 0; i < romanNumbers.length; i++) {
-            if (str.equals(romanNumbers[i])) {
+        for (String romanNumber : romanNumbers) {
+            if (str.equals(romanNumber)) {
                 return true;
             }
         }
@@ -77,10 +77,7 @@ public class Main {
     }
 
     public static boolean checkingTheEnteredValueForMinimumAndMaximum(String string) {
-        if (!romanNumbersGetting(string) && arabNumbersGetting(string) && Integer.parseInt(string) > 0 && Integer.parseInt(string) < 11) {
-            return true;
-        }
-        return false;
+        return !romanNumbersGetting(string) && arabNumbersGetting(string) && Integer.parseInt(string) > 0 && Integer.parseInt(string) < 11;
     }
 
     public static List<Integer> typeChecking(List<String> listInputData) throws Exception {
@@ -105,48 +102,50 @@ public class Main {
         String operator = operatorList.get(2);
         int operand1 = listOperands.get(0);
         int operand2 = listOperands.get(1);
-        if (operator.equals("+")) {
-            if (ownershipCheck(operatorList)) {
-                System.out.println(arabToRoman(plus(operand1, operand2)));
-            } else {
-                System.out.println(plus(operand1, operand2));
-            }
-        } else if (operator.equals("-")) {
-            int min = minus(operand1, operand2);
-            if (min < 0) {
+        switch (operator) {
+            case "+":
                 if (ownershipCheck(operatorList)) {
-                    throw new Exception("В римской системе нет отрицательных чисел");
+                    System.out.println(arabToRoman(plus(operand1, operand2)));
                 } else {
-                    System.out.println(min);
+                    System.out.println(plus(operand1, operand2));
                 }
-            } else {
+                break;
+            case "-":
+                int min = minus(operand1, operand2);
+                if (min < 0) {
+                    if (ownershipCheck(operatorList)) {
+                        throw new Exception("В римской системе нет отрицательных чисел");
+                    } else {
+                        System.out.println(min);
+                    }
+                } else {
+                    if (ownershipCheck(operatorList)) {
+                        System.out.println(arabToRoman(min));
+                    } else {
+                        System.out.println(min);
+                    }
+                }
+                break;
+            case "*":
                 if (ownershipCheck(operatorList)) {
-                    System.out.println(arabToRoman(min));
+                    System.out.println(arabToRoman(multiplication(operand1, operand2)));
                 } else {
-                    System.out.println(min);
+                    System.out.println(multiplication(operand1, operand2));
                 }
-            }
-        } else if (operator.equals("*")) {
-            if (ownershipCheck(operatorList)) {
-                System.out.println(arabToRoman(multiplication(operand1, operand2)));
-            } else {
-                System.out.println(multiplication(operand1, operand2));
-            }
-        } else if (operator.equals("/")) {
-            if (ownershipCheck(operatorList)) {
-                System.out.println(arabToRoman(division(operand1, operand2)));
-            } else {
-                System.out.println(division(operand1, operand2));
-            }
+                break;
+            case "/":
+                if (ownershipCheck(operatorList)) {
+                    System.out.println(arabToRoman(division(operand1, operand2)));
+                } else {
+                    System.out.println(division(operand1, operand2));
+                }
+                break;
         }
     }
 
 
     public static boolean ownershipCheck(List<String> gettingData) {
-        if (romanNumbersGetting(gettingData.get(0)) && romanNumbersGetting(gettingData.get(1))) {
-            return true;
-        }
-        return false;
+        return romanNumbersGetting(gettingData.get(0)) && romanNumbersGetting(gettingData.get(1));
     }
 
     public static int plus(int a, int b) {
