@@ -20,11 +20,9 @@ public class Main {
         String[] data = string.split(" ");
         List<String> listOfData = new ArrayList<>();
         if (data.length == 3) {
-            if ((Integer.parseInt(data[0]) > 0 && Integer.parseInt(data[0]) < 11) && (Integer.parseInt(data[2]) > 0 && Integer.parseInt(data[2]) < 11)) {
-                listOfData.add(data[0]);
-                listOfData.add(data[2]);
-                listOfData.add(data[1]);
-            }
+            listOfData.add(data[0]);
+            listOfData.add(data[2]);
+            listOfData.add(data[1]);
             return listOfData;
         } else if (data.length < 3) {
             System.out.println("throws Exception //т.к. строка не является математической операцией");
@@ -32,6 +30,18 @@ public class Main {
             System.out.println("throws Exception //т.к. формат математической операции не удовлетворяет заданию - два операнда и один оператор (+, -, /, *)");
         }
         return null;
+    }
+
+    public static int romanToArab(String string) {
+        int[] arabNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        String[] romanNumbers = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
+        int translateNum = 0;
+        for (int i = 0; i < 10; i++) {
+            if (string.equals(romanNumbers[i])) {
+                translateNum = arabNumbers[i];
+            }
+        }
+        return translateNum;
     }
 
     public static boolean arabNumbersGetting(String str) {
@@ -64,14 +74,12 @@ public class Main {
     }
 
     public static int plus(int a, int b) {
-        int res = a + b;
-        return res;
+        return a + b;
     }
 
     public static int minus(int a, int b) {
         //напишите тут ваш код
-        int res = a - b;
-        return res;
+        return a - b;
     }
 
     public static int multiplication(int a, int b) {
