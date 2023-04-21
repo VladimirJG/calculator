@@ -10,8 +10,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String newOperation = reader.readLine();
-        System.out.println(gettingNumericOperands(newOperation));
-
+        operationCalculate(newOperation);
 
     }
 
@@ -24,11 +23,9 @@ public class Main {
             listOfData.add(data[1]);
             return listOfData;
         } else if (data.length < 3) {
-            throw new Exception("строка не является математической операцией");
-        } else if ((minus(romanToArab(data[0]), romanToArab(data[2]))) < 0) {
-            throw new Exception("в римской системе нет отрицательных чисел");
+            throw new Exception("Строка не является математической операцией");
         } else {
-            throw new Exception("формат математической операции не удовлетворяет заданию - два операнда и один оператор");
+            throw new Exception("Формат математической операции не удовлетворяет заданию - два операнда и один оператор");
         }
     }
 
@@ -42,6 +39,21 @@ public class Main {
             }
         }
         return translateNum;
+    }
+
+    public static String arabToRoman(int num) {
+        int[] arabNumbers = {1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000};
+        String[] romanNumbers = {"I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M"};
+        int i = 12;
+        String translateString = "";
+        while (num > 0) {
+            while (arabNumbers[i] > num) {
+                i--;
+            }
+            translateString += romanNumbers[i];
+            num -= arabNumbers[i];
+        }
+        return translateString;
     }
 
     public static boolean arabNumbersGetting(String str) {
@@ -64,6 +76,13 @@ public class Main {
         return false;
     }
 
+    public static boolean checkingTheEnteredValueForMinimumAndMaximum(String string) {
+        if (!romanNumbersGetting(string) && arabNumbersGetting(string) && Integer.parseInt(string) > 0 && Integer.parseInt(string) < 11) {
+            return true;
+        }
+        return false;
+    }
+
     public static List<Integer> typeChecking(List<String> listInputData) throws Exception {
         List<Integer> outputDataList = new ArrayList<>();
         if (checkingTheEnteredValueForMinimumAndMaximum(listInputData.get(0)) && checkingTheEnteredValueForMinimumAndMaximum(listInputData.get(1))) {
@@ -79,24 +98,52 @@ public class Main {
         }
     }
 
-    public static List<Integer> gettingNumericOperands(String inputOperation) throws Exception {
-        List<String> listOfData = gettingData(inputOperation);
-        return typeChecking(listOfData);
-    }
 
-    public static void operationCalculate(List<Integer> listOfData, List<String> gettingData) {
-        String operator = gettingData.get(2);
-        int operand1 = listOfData.get(0);
-        int operand2 = listOfData.get(1);
+    public static void operationCalculate(String string) throws Exception {
+        List<Integer> listOperands = typeChecking(gettingData(string));
+        List<String> operatorList = gettingData(string);
+        String operator = operatorList.get(2);
+        int operand1 = listOperands.get(0);
+        int operand2 = listOperands.get(1);
         if (operator.equals("+")) {
-            System.out.println(plus(operand1, operand2));
+            if (ownershipCheck(operatorList)) {
+                System.out.println(arabToRoman(plus(operand1, operand2)));
+            } else {
+                System.out.println(plus(operand1, operand2));
+            }
         } else if (operator.equals("-")) {
-            System.out.println();
+            int min = minus(operand1, operand2);
+            if (min < 0) {
+                if (ownershipCheck(operatorList)) {
+                    throw new Exception("В римской системе нет отрицательных чисел");
+                } else {
+                    System.out.println(min);
+                }
+            } else {
+                if (ownershipCheck(operatorList)) {
+                    System.out.println(arabToRoman(min));
+                } else {
+                    System.out.println(min);
+                }
+            }
+        } else if (operator.equals("*")) {
+            if (ownershipCheck(operatorList)) {
+                System.out.println(arabToRoman(multiplication(operand1, operand2)));
+            } else {
+                System.out.println(multiplication(operand1, operand2));
+            }
+        } else if (operator.equals("/")) {
+            if (ownershipCheck(operatorList)) {
+                System.out.println(arabToRoman(division(operand1, operand2)));
+            } else {
+                System.out.println(division(operand1, operand2));
+            }
         }
     }
 
-    public static boolean checkingTheEnteredValueForMinimumAndMaximum(String string) {
-        if (!romanNumbersGetting(string) && arabNumbersGetting(string) && Integer.parseInt(string) > 0 && Integer.parseInt(string) < 11) {
+
+    public static boolean ownershipCheck(List<String> gettingData) {
+        if (romanNumbersGetting(gettingData.get(0)) && romanNumbersGetting(gettingData.get(1))) {
             return true;
         }
         return false;
