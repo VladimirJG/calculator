@@ -1,28 +1,21 @@
 package calculator_programm;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-       /* String newOperation = reader.readLine();
-        System.out.println(gettingData(newOperation));*/
-        List<String> list = new ArrayList<>();
-        list.add("0");
-        list.add("10");
-        list.add("-");
-        System.out.println(typeChecking(list));
-        // System.out.println(romanToArab("II"));
+        String newOperation = reader.readLine();
+        System.out.println(gettingNumericOperands(newOperation));
+
 
     }
 
-    public static List<String> gettingData(String string) {
+    public static List<String> gettingData(String string) throws Exception {
         String[] data = string.split(" ");
         List<String> listOfData = new ArrayList<>();
         if (data.length == 3) {
@@ -31,11 +24,12 @@ public class Main {
             listOfData.add(data[1]);
             return listOfData;
         } else if (data.length < 3) {
-            System.out.println("throws Exception //т.к. строка не является математической операцией");
+            throw new Exception("строка не является математической операцией");
+        } else if ((minus(romanToArab(data[0]), romanToArab(data[2]))) < 0) {
+            throw new Exception("в римской системе нет отрицательных чисел");
         } else {
-            System.out.println("throws Exception //т.к. формат математической операции не удовлетворяет заданию - два операнда и один оператор (+, -, /, *)");
+            throw new Exception("формат математической операции не удовлетворяет заданию - два операнда и один оператор");
         }
-        return null;
     }
 
     public static int romanToArab(String string) {
@@ -70,7 +64,7 @@ public class Main {
         return false;
     }
 
-    public static List<Integer> typeChecking(List<String> listInputData) {
+    public static List<Integer> typeChecking(List<String> listInputData) throws Exception {
         List<Integer> outputDataList = new ArrayList<>();
         if (checkingTheEnteredValueForMinimumAndMaximum(listInputData.get(0)) && checkingTheEnteredValueForMinimumAndMaximum(listInputData.get(1))) {
             outputDataList.add(0, Integer.parseInt(listInputData.get(0)));
@@ -81,29 +75,29 @@ public class Main {
             outputDataList.add(1, romanToArab(listInputData.get(1)));
             return outputDataList;
         } else {
-            System.out.println("throws Exception //т.к. используются одновременно разные системы счисления");
+            throw new Exception("используются одновременно разные системы счисления");
         }
-        return null;
     }
 
-    public static void operation(String inputOperation) {
+    public static List<Integer> gettingNumericOperands(String inputOperation) throws Exception {
         List<String> listOfData = gettingData(inputOperation);
+        return typeChecking(listOfData);
     }
 
-    public static void operandSelection(String str) {
-        char[] array = str.toCharArray();
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == '-') {
-                System.out.println(5 + 5);
-            }
+    public static void operationCalculate(List<Integer> listOfData, List<String> gettingData) {
+        String operator = gettingData.get(2);
+        int operand1 = listOfData.get(0);
+        int operand2 = listOfData.get(1);
+        if (operator.equals("+")) {
+            System.out.println(plus(operand1, operand2));
+        } else if (operator.equals("-")) {
+            System.out.println();
         }
     }
 
     public static boolean checkingTheEnteredValueForMinimumAndMaximum(String string) {
         if (!romanNumbersGetting(string) && arabNumbersGetting(string) && Integer.parseInt(string) > 0 && Integer.parseInt(string) < 11) {
             return true;
-        } else {
-            System.out.println("Введенное значение не соответствует условиям");
         }
         return false;
     }
